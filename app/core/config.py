@@ -1,12 +1,13 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
+import os
 
 class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str = "sqlite:///./sat_ai.db"
+    # Database - use absolute path for Railway
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "sqlite:///./sat_ai.db")
     
     # JWT
-    SECRET_KEY: str = "your-secret-key-change-this-in-production"
+    SECRET_KEY: str = os.environ.get("SECRET_KEY", "your-secret-key-change-this-in-production")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 60  # 30 days
     
@@ -19,10 +20,12 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:8000",
         "http://localhost:5173",  # Vite dev server
-        "chrome-extension://*"
+        "chrome-extension://*",
+        "https://*.vercel.app",  # Vercel frontend
+        "https://*.railway.app"  # Railway backend
     ]
     
     class Config:
         env_file = ".env"
 
-settings = Settings() 
+settings = Settings()
